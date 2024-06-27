@@ -14,6 +14,8 @@ jobs:
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
+          - repos: newsflash-git
+            preinstall-pkgs: "clapper"
 
       fail-fast: false
       
