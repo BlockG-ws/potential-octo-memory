@@ -4,6 +4,7 @@ on:
   push:
   schedule:
     - cron:  '35 0,12 * * *'
+  workflow_dispatch:
 
 jobs:
   buildAUR:
