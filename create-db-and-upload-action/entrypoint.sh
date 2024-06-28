@@ -18,6 +18,11 @@ if [ ! -f ~/.config/rclone/rclone.conf ]; then
     echo "drive_id=$RCLONE_ONEDRIVE_DRIVE_ID" >> ~/.config/rclone/rclone.conf
 fi
 
+if [ $RCLONE_ONEDRIVE_DRIVE_TYPE == "business" && $RCLONE_ONEDRIVE_TENANT_ID ]; then
+    echo "auth_url = https://login.microsoftonline.com/$RCLONE_ONEDRIVE_TENANT_ID/oauth2/v2.0/authorize" >> ~/.config/rclone/rclone.conf
+    echo "token_url = https://login.microsoftonline.com/$RCLONE_ONEDRIVE_TENANT_ID/oauth2/v2.0/token" >> ~/.config/rclone/rclone.conf
+fi
+
 if [ ! -z "$gpg_key" ]; then
     echo "$gpg_key" | gpg --import
 fi

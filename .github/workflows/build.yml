@@ -14,8 +14,6 @@ jobs:
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
-          - repos: newsflash-git
-            preinstall-pkgs: "clapper"
 
       fail-fast: false
       
@@ -61,7 +59,8 @@ jobs:
   #        RCLONE_ONEDRIVE_REGION: global
   #        RCLONE_ONEDRIVE_TOKEN: ${{ secrets.RCLONE_ONEDRIVE_TOKEN }}
   #        RCLONE_ONEDRIVE_DRIVE_ID: ${{ secrets.RCLONE_ONEDRIVE_DRIVE_ID }}
-  #        RCLONE_ONEDRIVE_DRIVE_TYPE: personal
+  #        RCLONE_ONEFRIVE_TENANT_ID: ${{ secrets.RCLONE_ONEDRIVE_TENANT_ID }}
+  #        RCLONE_ONEDRIVE_DRIVE_TYPE: business
   #        dest_path: /archrepo
   #        repo_name: vifly
   #        gpg-privatekey: ${{ secrets.gpg_private_key }}
