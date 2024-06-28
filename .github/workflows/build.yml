@@ -73,27 +73,27 @@ jobs:
               token: ${{ secrets.GITHUB_TOKEN }}
   
   #TODO 
-  #uploadToOneDrive:      
-  #  runs-on: ubuntu-latest
-  #  if: always()
-  #  needs: [buildAUR]
+  uploadToOneDrive:      
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [buildAUR , buildNonAUR]
 
-  #  steps:
-  #    - uses: actions/checkout@v3
-  #    
-  #    - uses: actions/download-artifact@v3
-  #      id: download
+    steps:
+      - uses: actions/checkout@v3
       
-  #    - uses: ./create-db-and-upload-action
-  #      with:
-  #        RCLONE_ONEDRIVE_CLIENT_ID: ${{ secrets.RCLONE_ONEDRIVE_CLIENT_ID }}
-  #        RCLONE_ONEDRIVE_CLIENT_SECRET: ${{ secrets.RCLONE_ONEDRIVE_CLIENT_SECRET }}
-  #        RCLONE_ONEDRIVE_REGION: global
-  #        RCLONE_ONEDRIVE_TOKEN: ${{ secrets.RCLONE_ONEDRIVE_TOKEN }}
-  #        RCLONE_ONEDRIVE_DRIVE_ID: ${{ secrets.RCLONE_ONEDRIVE_DRIVE_ID }}
-  #        RCLONE_ONEFRIVE_TENANT_ID: ${{ secrets.RCLONE_ONEDRIVE_TENANT_ID }}
-  #        RCLONE_ONEDRIVE_DRIVE_TYPE: business
-  #        dest_path: /archrepo
-  #        repo_name: vifly
-  #        gpg-privatekey: ${{ secrets.gpg_private_key }}
-  #        local_path: ${{ steps.download.outputs.download-path }}
+      - uses: actions/download-artifact@v3
+        id: download
+      
+      - uses: ./create-db-and-upload-action
+        with:
+          RCLONE_ONEDRIVE_CLIENT_ID: ${{ secrets.RCLONE_ONEDRIVE_CLIENT_ID }}
+          RCLONE_ONEDRIVE_CLIENT_SECRET: ${{ secrets.RCLONE_ONEDRIVE_CLIENT_SECRET }}
+          RCLONE_ONEDRIVE_REGION: global
+          RCLONE_ONEDRIVE_TOKEN: ${{ secrets.RCLONE_ONEDRIVE_TOKEN }}
+          RCLONE_ONEDRIVE_DRIVE_ID: ${{ secrets.RCLONE_ONEDRIVE_DRIVE_ID }}
+          RCLONE_ONEFRIVE_TENANT_ID: ${{ secrets.RCLONE_ONEDRIVE_TENANT_ID }}
+          RCLONE_ONEDRIVE_DRIVE_TYPE: business
+          dest_path: /data/archrepo
+          repo_name: gb-cha0s
+          gpg-privatekey: ${{ secrets.gpg_private_key }}
+          local_path: ${{ steps.download.outputs.download-path }}
