@@ -1,9 +1,24 @@
 Use Github Actions to build Arch packages.
 # How to use
-Go to releases and download packages
+Go to releases and download packages, or use the repo:
+1.import keys
+```shell
+wget -O /tmp/gb-cha0s.asc 'https://rawcdn.githack.com/BlockG-ws/potential-octo-memory/master/repo-sign.asc' && sudo pacman-key --add /tmp/gb-cha0s.asc
+sudo pacman-key --lsign-key hi@imgb.space
+```
+2. add repo
+edit /etc/pacman.conf
+```
+[gb-cha0s]
+Server = https://aur.ws.imgb.space
+```
+3. sync
+```shell
+sudo pacman -Syu
+```
 
-or use the repo: ?
-# Guide
-For more information, please read [vifly's post](https://viflythink.com/Use_GitHubActions_to_build_AUR/) (Chinese).
+# Contribute Guide
 
-The uploadToOneDrive job is optional, you can use [urepo](https://github.com/vifly/urepo) to create your package repositorie after upload to OneDrive.
+based on [vifly's post](https://viflythink.com/Use_GitHubActions_to_build_AUR/) (Chinese).
+
+For package additions/deletions, please open a issue with package name and reasons.
