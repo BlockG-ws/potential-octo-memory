@@ -1,12 +1,14 @@
 Use Github Actions to build Arch packages.
 # How to use
-Go to releases and download packages, or use the repo:
+Go to releases and download packages, or use the repo: https://aur.imgb.space
+
 1.import keys
 ```shell
 wget -O /tmp/gb-cha0s.asc 'https://rawcdn.githack.com/BlockG-ws/potential-octo-memory/master/repo-sign.asc' && sudo pacman-key --add /tmp/gb-cha0s.asc
 sudo pacman-key --lsign-key hi@imgb.space
 ```
 2. add repo
+
 edit /etc/pacman.conf
 ```
 [gb-cha0s]
