@@ -10,7 +10,7 @@ sudo pacman-key --lsign-key hi@imgb.space
 edit /etc/pacman.conf
 ```
 [gb-cha0s]
-Server = https://aur.ws.imgb.space
+Server = https://aur.imgb.space
 ```
 3. sync
 ```shell
