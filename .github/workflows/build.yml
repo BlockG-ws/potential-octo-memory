@@ -10,7 +10,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [osu-lazer, ntfysh-bin, ttf-sarasa-gothic-nerd-fonts, plasma6-wallpapers-wallpaper-engine-git, git-cola, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git]
+        repos: [osu-lazer, ntfysh, ttf-sarasa-gothic-nerd-fonts, plasma6-wallpapers-wallpaper-engine-git, git-cola, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git]
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
@@ -43,7 +43,7 @@ jobs:
   buildNonAUR:
       strategy:
         matrix:
-          PKGBUILDs: [newsflash-git]
+          PKGBUILDs: [newsflash-git, wezterm-git-noinfo]
       
         fail-fast: false
       
