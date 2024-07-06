@@ -1,9 +1,10 @@
 # Maintainer:  Wez Furlong <wez at wezfurlong dot org>
 # Co-Maintainer: Bernat Gabor <gaborjbernat@gmail.com>
+# Modified by: Grass Block <hi at imgb dot space>
 
 pkgname=("wezterm-git-noinfo")
 pkgdesc="A terminal emulator implemented in Rust, using OpenGL ES 2 for rendering."
-pkgver=20240624.065522.552bb1d6
+pkgver=20240701.070926.69686f45
 pkgrel=1
 arch=("x86_64" "i686")
 url="https://github.com/wez/wezterm"

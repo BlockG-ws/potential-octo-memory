@@ -1,4 +1,5 @@
 # Maintainer: Felix Bühler <account at buehler dot rocks>
+# Modified by: Grass Block <hi at imgb dot space>
 
 pkgname=newsflash-git
 _pkgname=news_flash_gtk
