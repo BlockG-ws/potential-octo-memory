@@ -20,7 +20,7 @@ pacman -Syu --noconfirm archlinux-keyring
 pacman -Syu --noconfirm --needed git base-devel
 git clone https://aur.archlinux.org/yay-bin.git
 cd yay-bin
-makepkg -sic --noconfirm
+sudo -u builder makepkg -sic --noconfirm
 cd ..
 
 
