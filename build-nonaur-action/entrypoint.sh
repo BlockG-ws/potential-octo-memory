@@ -8,7 +8,7 @@ cat << EOM >> /etc/pacman.conf
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 [archlinuxcn]
-Server = https://repo.archlinuxcn.org/x86_64
+Server = https://mirrors.cicku.me/archlinuxcn/$arch
 EOM
 
 pacman-key --init

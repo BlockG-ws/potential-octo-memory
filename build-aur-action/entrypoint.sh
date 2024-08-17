@@ -8,7 +8,7 @@ chmod -R a+rw .
 
 cat << EOM >> /etc/pacman.conf
 [archlinuxcn]
-Server = https://repo.archlinuxcn.org/x86_64
+Server = https://mirrors.cicku.me/archlinuxcn/$arch
 EOM
 
 pacman-key --init
