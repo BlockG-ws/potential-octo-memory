@@ -14,8 +14,8 @@ EOM
 # don't add archcn since the repo is down
 
 pacman-key --init
-pacman-key --lsign-key "farseerfc@archlinux.org"
-pacman -Sy --noconfirm && pacman -S --noconfirm archlinuxcn-keyring
+#pacman-key --lsign-key "farseerfc@archlinux.org"
+#pacman -Sy --noconfirm && pacman -S --noconfirm archlinuxcn-keyring
 pacman -Syu --noconfirm archlinux-keyring
 #pacman -Syu --noconfirm --needed yay
 
