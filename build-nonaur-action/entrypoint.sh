@@ -7,15 +7,17 @@ FILE="$(basename "$0")"
 cat << EOM >> /etc/pacman.conf
 [multilib]
 Include = /etc/pacman.d/mirrorlist
-[archlinuxcn]
-Server = https://mirrors.xtom.us/archlinuxcn/$arch
 EOM
+
+#[archlinuxcn]
+#Server = https://mirrors.xtom.us/archlinuxcn/$arch
+# don't add archcn since the repo is down
 
 pacman-key --init
 pacman-key --lsign-key "farseerfc@archlinux.org"
 pacman -Sy --noconfirm && pacman -S --noconfirm archlinuxcn-keyring
 pacman -Syu --noconfirm archlinux-keyring
-pacman -Syu --noconfirm --needed yay
+#pacman -Syu --noconfirm --needed yay
 
 # Makepkg does not allow running as root
 # Create a new user `builder`
@@ -28,6 +30,13 @@ echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Give all users (particularly builder) full access to these files
 chmod -R a+rw .
+
+# install yay maually
+pacman -Syu --noconfirm --needed git base-devel
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin
+makepkg -sic --noconfirm
+cd ..
 
 BASEDIR="$PWD"
 echo "BASEDIR: $BASEDIR"
