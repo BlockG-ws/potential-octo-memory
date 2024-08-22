@@ -6,22 +6,22 @@ useradd builder -m
 echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chmod -R a+rw .
 
-#cat << EOM >> /etc/pacman.conf
-#[archlinuxcn]
-#Server = https://mirrors.xtom.us/archlinuxcn/$arch
-#EOM
+cat << EOM >> /etc/pacman.conf
+[archlinuxcn]
+Server = https://repo.archlinuxcn.org/$arch
+EOM
 
 pacman-key --init
-#pacman-key --lsign-key "farseerfc@archlinux.org"
-#pacman -Sy --noconfirm && pacman -S --noconfirm archlinuxcn-keyring
+pacman-key --lsign-key "farseerfc@archlinux.org"
+pacman -Sy --noconfirm && pacman -S --noconfirm archlinuxcn-keyring
 pacman -Syu --noconfirm archlinux-keyring
-#pacman -Syu --noconfirm yay
+pacman -Syu --noconfirm yay
 # install yay maually
-pacman -Syu --noconfirm --needed git base-devel
-git clone https://aur.archlinux.org/yay-bin.git
-cd yay-bin
-sudo -u builder makepkg -sic --noconfirm
-cd ..
+#pacman -Syu --noconfirm --needed git base-devel
+#git clone https://aur.archlinux.org/yay-bin.git
+#cd yay-bin
+#sudo -u builder makepkg -sic --noconfirm
+#cd ..
 
 
 if [ ! -z "$INPUT_PREINSTALLPKGS" ]; then
