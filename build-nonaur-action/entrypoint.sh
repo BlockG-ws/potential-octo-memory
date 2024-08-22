@@ -9,7 +9,7 @@ cat << EOM >> /etc/pacman.conf
 Include = /etc/pacman.d/mirrorlist
 
 [archlinuxcn]
-Server = https://repo.archlinuxcn.org/$arch
+Server = https://repo.archlinuxcn.org/x86_64
 EOM
 
 
