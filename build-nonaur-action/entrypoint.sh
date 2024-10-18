@@ -84,6 +84,8 @@ if [ -n "${INPUT_AURDEPS:-}" ]; then
 	sudo -H -u builder yay --sync --noconfirm --needed --builddir="$BASEDIR" "${PKGDEPS[@]}"
 fi
 
+# import firefox gpg key
+sudo -H -u builder gpg --keyserver pgp.mit.edu --recv-keys 14F26682D0916CDD81E37B6D61B7B526D98F0353
 # Build packages
 # INPUT_MAKEPKGARGS is intentionally unquoted to allow arg splitting
 # shellcheck disable=SC2086
