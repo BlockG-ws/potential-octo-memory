@@ -13,7 +13,7 @@ _pgo=true
 
 _pkgname=firefox-developer-edition
 pkgname=$_pkgname-kde
-_pkgver=132.0
+_main_pkgver=132.0
 pkgver=132.0b8
 pkgrel=1
 pkgdesc="Standalone web browser from mozilla.org with OpenSUSE patch, integrate better with KDE"
@@ -127,7 +127,7 @@ _google_default_client_secret=0ZChLK6AxeA3Isu96MkwqDR4
 _mozilla_api_key=e05d56db0a694edc8b5aaebda3f2db6a
 
 prepare() {
-  cd firefox-$pkgver
+  cd firefox-$_main_pkgver
 
   cp "$srcdir/mozconfig" .mozconfig
 
