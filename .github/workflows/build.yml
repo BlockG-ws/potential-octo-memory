@@ -43,7 +43,7 @@ jobs:
   buildNonAUR:
       strategy:
         matrix:
-          PKGBUILDs: [newsflash-git, wezterm-git-noinfo, ff-dev-kde]
+          PKGBUILDs: [newsflash-git, wezterm-git-noinfo, firefox-developer-edition-kde]
       
         fail-fast: false
       
