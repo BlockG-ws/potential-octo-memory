@@ -43,7 +43,7 @@ jobs:
   buildNonAUR:
       strategy:
         matrix:
-          PKGBUILDs: [newsflash-git, wezterm-git-noinfo]
+          PKGBUILDs: [newsflash-git, wezterm-git-noinfo, ff-dev-kde]
       
         fail-fast: false
       
