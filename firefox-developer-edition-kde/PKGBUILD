@@ -13,6 +13,7 @@ _pgo=true
 
 _pkgname=firefox-developer-edition
 pkgname=$_pkgname-kde
+_pkgver=132.0
 pkgver=132.0b8
 pkgrel=1
 pkgdesc="Standalone web browser from mozilla.org with OpenSUSE patch, integrate better with KDE"
@@ -147,7 +148,7 @@ prepare() {
 
 build() {
   #export CXXFLAGS="${CFLAGS}"
-  cd firefox-$pkgver
+  cd firefox-$_pkgver
   export MOZ_SOURCE_REPO="$_repo"
   export MOZBUILD_STATE_PATH="$srcdir/mozbuild"
   export MOZ_APP_REMOTINGNAME=$pkgname
