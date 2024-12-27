@@ -6,15 +6,19 @@ inputs:
     required: true
   RCLONE_ONEDRIVE_REGION:
     required: true
+  RCLONE_ONEDRIVE_TENANT_ID:
+    required: false
+    description: "Your tenant id, required if the application is created with single tenant scope. Read rclone documention for more info."
   RCLONE_ONEDRIVE_TOKEN:
     required: true
   RCLONE_ONEDRIVE_DRIVE_ID:
     required: true
   RCLONE_ONEDRIVE_DRIVE_TYPE:
     required: true
-  RCLONE_ONEDRIVE_TENANT_ID:
+  RCLONE_CONFIG_CONTENT:
+    required: true
+  RCLONE_CONFIG_NAME:
     required: false
-    description: "Your tenant id, required if the application is created with single tenant scope. Read rclone documention for more info."
   dest_path:
     required: true
   repo_name:
