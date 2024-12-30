@@ -10,7 +10,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [osu-lazer, ntfysh, ttf-sarasa-gothic-nerd-fonts, plasma6-wallpapers-wallpaper-engine-git, git-cola, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, clash-nyanpasu-git, code-translucent, 64gram-desktop, prismlauncher-git,ghostty-git,ghostty-git-zen3]
+        repos: [osu-lazer, ntfysh, ttf-sarasa-gothic-nerd-fonts, git-cola, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, clash-nyanpasu-git, code-translucent, 64gram-desktop, prismlauncher-git,ghostty-git,ghostty-git-zen3]
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
