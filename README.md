@@ -1,6 +1,6 @@
 Use Github Actions to build Arch packages.
 # How to use
-Go to releases and download packages, or use the repo: https://aur.imgb.space
+Go to releases and download packages, or use the repo: https://repo.grassblock.eu.org/gb-cha0s
 
 1.import keys
 ```shell
@@ -12,7 +12,7 @@ sudo pacman-key --lsign-key hi@imgb.space
 edit /etc/pacman.conf
 ```
 [gb-cha0s]
-Server = https://aur.imgb.space
+Server =  https://repo.grassblock.eu.org/gb-cha0s
 ```
 3. sync
 ```shell
