@@ -76,7 +76,7 @@ jobs:
               pkgdir: ${{ matrix.PKGBUILDs }}
               aurDeps: true
 
-          - uses: actions/upload-artifact@v3
+          - uses: actions/upload-artifact@v4
             with:
               path: ./*/*.pkg.tar.zst
               name: ${{ matrix.PKGBUILDs }}
