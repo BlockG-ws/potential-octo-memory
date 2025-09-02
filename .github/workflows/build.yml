@@ -22,7 +22,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    # use cache to speed up build
+    - name: restore from cache
+      id: cache
+      uses: actions/cache@v4
+      with:
+        key: aur-build-cache
+        path:  './*/*.tar.*'
+    
     - uses: ./build-aur-action
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         repo-name: ${{ matrix.repos }}
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
@@ -52,7 +61,15 @@ jobs:
       steps:
           - uses: actions/checkout@v3
 
+          - name: restore from cache
+            id: cache
+            uses: actions/cache@v4
+            with:
+              key: aur-build-cache
+              path:  './*/*.tar.*'
+
           - name: Build Non-AUR packages
+            if: steps.cache.outputs.cache-hit != 'true'
             id: makepkg
             uses: ./build-nonaur-action
             with:
