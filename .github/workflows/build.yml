@@ -26,7 +26,7 @@ jobs:
       id: aur-version
       run: |
         # 获取 AUR 包的最新版本信息
-        AUR_INFO=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=info&arg=${PACKAGE_NAME}")
+        AUR_INFO=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=info&arg=${{matrix.repos}}")
         LATEST_VERSION=$(echo $AUR_INFO | jq -r '.results[0].Version')
         PACKAGE_BASE=$(echo $AUR_INFO | jq -r '.results[0].PackageBase')
         
@@ -76,7 +76,7 @@ jobs:
           - name: Extract version from PKGBUILD
             id: version
             run: |
-              source "${PKGBUILD_PATH}"
+              source "./${{ matrix.PKGBUILDs }}/PKGBUILD"
               echo "pkgver=${pkgver}" >> $GITHUB_OUTPUT
               echo "pkgname=${pkgname}" >> $GITHUB_OUTPUT
 
