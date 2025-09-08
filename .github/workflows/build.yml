@@ -21,6 +21,18 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+
+    - name: Get latest version from AUR
+      id: aur-version
+      run: |
+        # 获取 AUR 包的最新版本信息
+        AUR_INFO=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=info&arg=${PACKAGE_NAME}")
+        LATEST_VERSION=$(echo $AUR_INFO | jq -r '.results[0].Version')
+        PACKAGE_BASE=$(echo $AUR_INFO | jq -r '.results[0].PackageBase')
+        
+        echo "latest_version=${LATEST_VERSION}" >> $GITHUB_OUTPUT
+        echo "package_base=${PACKAGE_BASE}" >> $GITHUB_OUTPUT
+        echo "Latest version: ${LATEST_VERSION}"
     
     # use cache to speed up build
     - name: restore from cache
@@ -28,7 +40,7 @@ jobs:
       uses: actions/cache@v4
       with:
         key: aur-build-cache
-        path:  './*/*.tar.*'
+        path:  './*/${{ matrix.repos }}-*${{ steps.aur-version.outputs.latest_version }}*.pkg.tar.zst'
     
     - uses: ./build-aur-action
       if: steps.cache.outputs.cache-hit != 'true'
@@ -61,12 +73,19 @@ jobs:
       steps:
           - uses: actions/checkout@v3
 
+          - name: Extract version from PKGBUILD
+            id: version
+            run: |
+              source "${PKGBUILD_PATH}"
+              echo "pkgver=${pkgver}" >> $GITHUB_OUTPUT
+              echo "pkgname=${pkgname}" >> $GITHUB_OUTPUT
+
           - name: restore from cache
             id: cache
             uses: actions/cache@v4
             with:
               key: aur-build-cache
-              path:  './*/*.tar.*'
+              path:  './*/${{ matrix.PKGBUILDs }}-*${{ steps.version.outputs.pkgver }}*.pkg.tar.zst'
 
           - name: Build Non-AUR packages
             if: steps.cache.outputs.cache-hit != 'true'
