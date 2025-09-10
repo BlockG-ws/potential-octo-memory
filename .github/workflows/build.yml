@@ -10,7 +10,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [osu-lazer, ntfysh, ttf-sarasa-gothic-nerd-fonts, git-cola, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, clash-nyanpasu-git, code-translucent, 64gram-desktop, prismlauncher-git,ghostty-git,ghostty-git-zen3]
+        repos: [ntfysh, ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, code-translucent, 64gram-desktop, prismlauncher-git, linux-wallpaperengine-git]
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
@@ -41,6 +41,22 @@ jobs:
       with:
         key: aur-build-cache
         path:  './*/${{ matrix.repos }}-*${{ steps.aur-version.outputs.latest_version }}*.pkg.tar.zst'
+
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: true
+        
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: false
+        swap-storage: false
     
     - uses: ./build-aur-action
       if: steps.cache.outputs.cache-hit != 'true'
