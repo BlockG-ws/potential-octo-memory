@@ -43,6 +43,7 @@ jobs:
         path:  './*/${{ matrix.repos }}-*${{ steps.aur-version.outputs.latest_version }}*.pkg.tar.zst'
 
     - name: Free Disk Space (Ubuntu)
+      if: steps.cache.outputs.cache-hit != 'true'
       uses: jlumbroso/free-disk-space@main
       with:
         # this might remove tools that are actually needed,
