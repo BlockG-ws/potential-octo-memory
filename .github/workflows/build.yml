@@ -66,12 +66,14 @@ jobs:
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
     
     - uses: actions/upload-artifact@v4
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         path: ./*/*.pkg.tar.zst
         name: ${{ matrix.repos }}
         if-no-files-found: error
         
     - uses: ncipollo/release-action@v1
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         allowUpdates: true
         tag: "packages"
@@ -113,12 +115,14 @@ jobs:
               aurDeps: true
 
           - uses: actions/upload-artifact@v4
+            if: steps.cache.outputs.cache-hit != 'true'
             with:
               path: ./*/*.pkg.tar.zst
               name: ${{ matrix.PKGBUILDs }}
               if-no-files-found: error
 
           - uses: ncipollo/release-action@v1
+            if: steps.cache.outputs.cache-hit != 'true'
             with:
               allowUpdates: true
               tag: "packages"
