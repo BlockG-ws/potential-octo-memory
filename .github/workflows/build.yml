@@ -45,22 +45,6 @@ jobs:
         key: aur-build-cache
         path:  './*/${{ matrix.repos }}-*${{ steps.aur-version.outputs.latest_version }}*.pkg.tar.zst'
 
-    - name: Free Disk Space (Ubuntu)
-      if: steps.cache.outputs.cache-hit != 'true'
-      uses: jlumbroso/free-disk-space@main
-      with:
-        # this might remove tools that are actually needed,
-        # if set to "true" but frees about 6 GB
-        tool-cache: true
-        
-        # all of these default to true, but feel free to set to
-        # "false" if necessary for your workflow
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: false
-        swap-storage: false
     
     - uses: ./build-aur-action
       if: steps.cache.outputs.cache-hit != 'true'
@@ -112,6 +96,23 @@ jobs:
             with:
               key: aur-build-cache
               path:  './*/${{ matrix.PKGBUILDs }}-*${{ steps.version.outputs.pkgver }}*.pkg.tar.zst'
+          
+          - name: Free Disk Space (Ubuntu)
+            if: steps.cache.outputs.cache-hit != 'true' && matrix.PKGBUILDs == '64gram-desktop'
+            uses: jlumbroso/free-disk-space@main
+            with:
+              # this might remove tools that are actually needed,
+              # if set to "true" but frees about 6 GB
+              tool-cache: true
+              
+              # all of these default to true, but feel free to set to
+              # "false" if necessary for your workflow
+              android: true
+              dotnet: true
+              haskell: true
+              large-packages: true
+              docker-images: false
+              swap-storage: false
 
           - name: Build Non-AUR packages
             if: steps.cache.outputs.cache-hit != 'true'
