@@ -32,7 +32,7 @@ noextract=("${_pkgname}-${pkgver}-full.tar.gz")
 
 sha256sums=('3df06a4e6d69eadd273ac401b28df50bf291e4980740ecfae9c126396870bb09'
             'cf040f411cd1e2930247aed6e050491c5ba14e695cf63c6e2da1b444926c5427'
-            '0d98136843b4e4d52018c05d5978fb4c5eeb66552aecd67187d9617572cdc930'
+            'ee6af4d1feb643a1d9bab9d0d967812d075a9e80bff7dbd5d5a4568e8fe9b513'
             '693a07b4e59d9c2ab271f493d1a9bac8890d6c8174fe60fb5db7396a06ff1f96')
 
 prepare() {
