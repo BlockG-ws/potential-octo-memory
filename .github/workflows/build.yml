@@ -10,7 +10,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [ntfysh, ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, code-translucent, 64gram-desktop, prismlauncher-git, linux-wallpaperengine-git]
+        repos: [ntfysh, ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, code-translucent, prismlauncher-git, linux-wallpaperengine-git]
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
@@ -31,7 +31,7 @@ jobs:
         PACKAGE_BASE=$(echo $AUR_INFO | jq -r '.results[0].PackageBase')
 
         # 尝试修复GitHub Actions无法正确处理冒号带来的问题
-        LATEST_VERSION=$(echo "$LATEST_VERSION" | sed 's/:/-colon-/g')
+        LATEST_VERSION=$(echo "$LATEST_VERSION" | sed 's/:/*/g')
         
         echo "latest_version=${LATEST_VERSION}" >> $GITHUB_OUTPUT
         echo "package_base=${PACKAGE_BASE}" >> $GITHUB_OUTPUT
@@ -101,7 +101,7 @@ jobs:
               source "./${{ matrix.PKGBUILDs }}/PKGBUILD"
 
               # 尝试修复GitHub Actions无法正确处理冒号带来的问题
-              pkgver=$(echo "$pkgver" | sed 's/:/-colon-/g')
+              pkgver=$(echo "$pkgver" | sed 's/:/*/g')
 
               echo "pkgver=${pkgver}" >> $GITHUB_OUTPUT
               echo "pkgname=${pkgname}" >> $GITHUB_OUTPUT
