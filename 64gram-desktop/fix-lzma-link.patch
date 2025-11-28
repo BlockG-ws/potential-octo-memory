@@ -52,5 +52,5 @@ index 00000000..8e75394d
 +    else()
 +        # See auto_update directory contents
 +    endif()
-+    message(FATAL_ERROR "DEKSTOP_APP_USE_PACKAGED expected to be TRUE")
++    message(FATAL_ERROR "DESKTOP_APP_USE_PACKAGED expected to be TRUE")
 +endif()
