@@ -86,7 +86,7 @@ jobs:
   buildNonAUR:
       strategy:
         matrix:
-          PKGBUILDs: [newsflash-git, wezterm-git-noinfo]
+          PKGBUILDs: [64gram-desktop]
 
         fail-fast: false
 
