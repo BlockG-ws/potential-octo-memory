@@ -1,9 +1,7 @@
-c573b65a Fix linking with LZMA when auto update is disabled
 diff --git a/Telegram/CMakeLists.txt b/Telegram/CMakeLists.txt
-index 24c5909e..cb3ba61c 100644
---- a/Telegram/CMakeLists.txt
-+++ b/Telegram/CMakeLists.txt
-@@ -85,6 +85,7 @@ PRIVATE
+--- a/Telegram/CMakeLists.txt	(revision c795ea461d1e7c3b71fb5f7cd185fdfede331b9a)
++++ b/Telegram/CMakeLists.txt	(date 1764302965500)
+@@ -89,6 +89,7 @@
      desktop-app::external_qr_code_generator
      desktop-app::external_crash_reports
      desktop-app::external_auto_updates
@@ -11,7 +9,7 @@ index 24c5909e..cb3ba61c 100644
      desktop-app::external_openssl
      desktop-app::external_openal
      desktop-app::external_xxhash
-@@ -1710,6 +1711,7 @@ if ((NOT DESKTOP_APP_DISABLE_AUTOUPDATE OR APPLE) AND NOT build_macstore AND NOT
+@@ -2152,6 +2153,7 @@
              desktop-app::external_qt
              desktop-app::external_zlib
              desktop-app::external_auto_updates
@@ -23,14 +21,14 @@ diff --git a/cmake/external/CMakeLists.txt b/cmake/external/CMakeLists.txt
 index 9be0e5a2..ed0b9aed 100644
 --- a/cmake/external/CMakeLists.txt
 +++ b/cmake/external/CMakeLists.txt
-@@ -47,6 +47,7 @@ add_checked_subdirectory(jpeg)
+@@ -36,6 +36,7 @@
+ add_checked_subdirectory(jpeg)
  add_checked_subdirectory(kcoreaddons)
- add_checked_subdirectory(kimageformats)
  add_checked_subdirectory(lz4)
 +add_checked_subdirectory(lzma)
  add_checked_subdirectory(minizip)
- if (LINUX)
-     add_checked_subdirectory(nimf_qt5)
+ add_checked_subdirectory(openal)
+ add_checked_subdirectory(openh264)
 diff --git a/cmake/external/lzma/CMakeLists.txt b/cmake/external/lzma/CMakeLists.txt
 new file mode 100644
 index 00000000..8e75394d

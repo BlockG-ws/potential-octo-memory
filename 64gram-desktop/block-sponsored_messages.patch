@@ -1,13 +1,13 @@
 diff --git a/Telegram/SourceFiles/data/components/sponsored_messages.cpp b/Telegram/SourceFiles/data/components/sponsored_messages.cpp
-index d0e9bc5a0..452ed15b4 100644
---- a/Telegram/SourceFiles/data/components/sponsored_messages.cpp
-+++ b/Telegram/SourceFiles/data/components/sponsored_messages.cpp
-@@ -181,7 +181,7 @@ void SponsoredMessages::inject(
+--- a/Telegram/SourceFiles/data/components/sponsored_messages.cpp	(revision c795ea461d1e7c3b71fb5f7cd185fdfede331b9a)
++++ b/Telegram/SourceFiles/data/components/sponsored_messages.cpp	(date 1764301666650)
+@@ -248,8 +248,7 @@
  }
  
- bool SponsoredMessages::canHaveFor(not_null<History*> history) const {
--	return history->peer->isChannel();
-+	return false;
+ bool SponsoredMessages::canHaveFor(not_null<HistoryItem*> item) const {
+-	return item->history()->peer->isBroadcast()
+-		&& item->isRegular();
++	return false；
  }
  
- void SponsoredMessages::request(not_null<History*> history, Fn<void()> done) {
+ bool SponsoredMessages::isTopBarFor(not_null<History*> history) const {
