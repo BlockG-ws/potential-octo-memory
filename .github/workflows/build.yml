@@ -10,7 +10,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, networkmanager-dmenu-git, code-translucent, prismlauncher-git, linux-wallpaperengine-git, plasma6-wallpapers-wallpaper-engine-git]
+        repos: [ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, vicinae, code-translucent, prismlauncher-git, linux-wallpaperengine-git, plasma6-wallpapers-wallpaper-engine-git]
         include:
           - repos: git-cola
             preinstall-pkgs: "at-spi2-core"
