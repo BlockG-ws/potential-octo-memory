@@ -40,6 +40,7 @@ jobs:
     # use cache to speed up build
     - name: restore from cache
       id: cache
+      if: ${{ !contains(matrix.repos, '-git') }}
       uses: actions/cache@v4
       with:
         key: aur-build-cache
@@ -97,6 +98,7 @@ jobs:
 
           - name: restore from cache
             id: cache
+            if: ${{ !contains(matrix.PKGBUILDs, '-git') }}
             uses: actions/cache@v4
             with:
               key: aur-build-cache
