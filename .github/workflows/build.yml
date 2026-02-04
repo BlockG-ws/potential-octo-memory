@@ -51,11 +51,16 @@ jobs:
       with:
         repo-name: ${{ matrix.repos }}
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
+      
+    - name: package tarball
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: tar -czf '${{ matrix.repos }}.tar.gz' ./*/*.pkg.tar.zst
+        
     
     - uses: actions/upload-artifact@v4
       if: steps.cache.outputs.cache-hit != 'true'
       with:
-        path: ./*/*.pkg.tar.zst
+        path: ./${{ matrix.repos }}.tar.gz
         name: ${{ matrix.repos }}
         if-no-files-found: error
         
