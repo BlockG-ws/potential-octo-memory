@@ -22,8 +22,9 @@ makedepends=('cmake' 'git' 'ninja' 'python' 'range-v3' 'tl-expected' 'microsoft-
              'dos2unix' 'glib2-devel')
 optdepends=('webkit2gtk: embedded browser features'
             'xdg-desktop-portal: desktop integration')
-
+_td_commit_sha=51743dfd01dff6179e2d8f7095729caa4e2222e9
 source=("https://github.com/TDesktop-x64/tdesktop/releases/download/v${pkgver}/${_pkgname}-${pkgver}-full.tar.gz"
+        "git+https://github.com/tdlib/td.git#tag=${_td_commit_sha}"
         "block-sponsored_messages.patch"
         "fix-lzma-link.patch"
         "io.github.tdesktop_x64.TDesktop.desktop")
@@ -31,6 +32,7 @@ source=("https://github.com/TDesktop-x64/tdesktop/releases/download/v${pkgver}/$
 noextract=("${_pkgname}-${pkgver}-full.tar.gz")
 
 sha256sums=('fe47a67c83d3c624ef6b8a6c66150a73e075b11d1f031d52066470a548307600'
+            'SKIP'
             'cf040f411cd1e2930247aed6e050491c5ba14e695cf63c6e2da1b444926c5427'
             'ee6af4d1feb643a1d9bab9d0d967812d075a9e80bff7dbd5d5a4568e8fe9b513'
             '693a07b4e59d9c2ab271f493d1a9bac8890d6c8174fe60fb5db7396a06ff1f96')
@@ -46,12 +48,21 @@ prepare() {
 build() {
     CXXFLAGS+=' -ffat-lto-objects'
 
+    cmake -S td -B td/build \
+        -DCMAKE_BUILD_TYPE=None \
+        -DCMAKE_INSTALL_PREFIX="$PWD/td/install" \
+        -Wno-dev \
+        -DTD_E2E_ONLY=ON
+    cmake --build td/build
+    cmake --install td/build
+
     cmake \
         -B build \
         -S $_pkgname-$pkgver-full \
         -G Ninja \
         -DCMAKE_VERBOSE_MAKEFILE=ON \
         -DCMAKE_INSTALL_PREFIX="/usr" \
+        -Dtde2e_DIR="$PWD/td/install/lib/cmake/tde2e" \
         -DCMAKE_BUILD_TYPE=Release \
         -DDESKTOP_APP_DISABLE_AUTOUPDATE=ON \
         -DTDESKTOP_API_TEST=ON
