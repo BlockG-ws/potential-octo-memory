@@ -39,7 +39,7 @@ sha256sums=('fe47a67c83d3c624ef6b8a6c66150a73e075b11d1f031d52066470a548307600'
             '693a07b4e59d9c2ab271f493d1a9bac8890d6c8174fe60fb5db7396a06ff1f96')
 
 prepare() {
-    LANG=C.UTF-8 bsdtar -xf ${_pkgname}-${pkgver}-full.tar.gz
+    #LANG=C.UTF-8 bsdtar -xf ${_pkgname}-${pkgver}-full.tar.gz
     cd $_pkgname-$pkgver-full
     #find "${srcdir}"/ -type f -exec dos2unix {} \;
     patch -Np1 -i ${srcdir}/block-sponsored_messages.patch
