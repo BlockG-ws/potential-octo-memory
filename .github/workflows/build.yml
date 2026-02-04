@@ -129,6 +129,10 @@ jobs:
               pkgdir: ${{ matrix.PKGBUILDs }}
               aurDeps: true
 
+          - name: package tarball
+            if: steps.cache.outputs.cache-hit != 'true'
+            run: tar -czf '${{ matrix.PKGBUILDs }}.tar.gz' ./*/*.pkg.tar.zst
+
           - uses: actions/upload-artifact@v4
             if: steps.cache.outputs.cache-hit != 'true'
             with:
@@ -159,11 +163,18 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R ${{ steps.download.outputs.download-path }}
 
+      - name: decompress tarballs
+        run: |
+            find . -name "*.tar.gz" -type f | while read file; do
+              echo "Extracting: $file"
+              tar -xzf "$file" -C "$(dirname "$file")"
+            done
+
       - uses: ./create-db-action
         with:
           repo_name: gb-cha0s
           gpg-privatekey: ${{ secrets.gpg_private_key }}
-          local_path: ${{ steps.download.outputs.download-path }}
+          local_path: ./**/*.pkg.tar.zst
 
       - uses: ncipollo/release-action@v1
         with:
