@@ -30,7 +30,7 @@ source=("https://github.com/TDesktop-x64/tdesktop/releases/download/v${pkgver}/$
         "fix-lzma-link.patch"
         "io.github.tdesktop_x64.TDesktop.desktop")
 
-noextract=("${_pkgname}-${pkgver}-full.tar.gz")
+#noextract=("${_pkgname}-${pkgver}-full.tar.gz")
 
 sha256sums=('fe47a67c83d3c624ef6b8a6c66150a73e075b11d1f031d52066470a548307600'
             'SKIP'
