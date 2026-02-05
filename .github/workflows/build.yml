@@ -36,7 +36,7 @@ jobs:
         echo "latest_version=${LATEST_VERSION}" >> $GITHUB_OUTPUT
         echo "package_base=${PACKAGE_BASE}" >> $GITHUB_OUTPUT
         echo "Latest version: ${LATEST_VERSION}"
-    
+
     # use cache to speed up build
     - name: restore from cache
       id: cache
@@ -46,18 +46,18 @@ jobs:
         key: aur-build-cache
         path:  './*/${{ matrix.repos }}-*${{ steps.aur-version.outputs.latest_version }}*.pkg.tar.zst'
 
-    
+
     - uses: ./build-aur-action
       if: steps.cache.outputs.cache-hit != 'true'
       with:
         repo-name: ${{ matrix.repos }}
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
-      
+
     - name: package tarball
       if: steps.cache.outputs.cache-hit != 'true'
       run: tar -czf '${{ matrix.repos }}.tar.gz' ./*/*.pkg.tar.zst
-        
-    
+
+
     - uses: actions/upload-artifact@v4
       if: steps.cache.outputs.cache-hit != 'true'
       with:
@@ -103,7 +103,7 @@ jobs:
             with:
               key: aur-build-cache
               path:  './*/${{ matrix.PKGBUILDs }}-*${{ steps.version.outputs.pkgver }}*.pkg.tar.zst'
-          
+
           - name: Free Disk Space (Ubuntu)
             if: steps.cache.outputs.cache-hit != 'true' && matrix.PKGBUILDs == '64gram-desktop'
             uses: jlumbroso/free-disk-space@main
@@ -111,7 +111,7 @@ jobs:
               # this might remove tools that are actually needed,
               # if set to "true" but frees about 6 GB
               tool-cache: true
-              
+
               # all of these default to true, but feel free to set to
               # "false" if necessary for your workflow
               android: true
@@ -149,7 +149,7 @@ jobs:
               token: ${{ secrets.GITHUB_TOKEN }}
 
   #TODO
-  upload:      
+  upload:
     runs-on: ubuntu-latest
     if: always()
     needs: [buildAUR , buildNonAUR]
