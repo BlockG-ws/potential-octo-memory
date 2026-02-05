@@ -7,7 +7,7 @@ diff --git a/Telegram/SourceFiles/data/components/sponsored_messages.cpp b/Teleg
  bool SponsoredMessages::canHaveFor(not_null<HistoryItem*> item) const {
 -	return item->history()->peer->isBroadcast()
 -		&& item->isRegular();
-+	return false；
++	return false;
  }
  
  bool SponsoredMessages::isTopBarFor(not_null<History*> history) const {
