@@ -3,6 +3,7 @@
 set -euo pipefail
 
 pkgname=$1
+BASEDIR="$PWD"
 
 useradd builder -m
 echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -48,4 +49,4 @@ fi
 echo "The pkgdir is $pkgdir"
 echo "The pkgname is $pkgname"
 cd "$pkgdir"
-python3 ../build-aur-action/encode_name.py
+python3 /encode_name.py

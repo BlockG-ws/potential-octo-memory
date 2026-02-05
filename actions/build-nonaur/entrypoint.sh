@@ -152,4 +152,4 @@ if [ -z "${INPUT_NAMCAPDISABLE:-}" ]; then
 	namcap_check
 fi
 
-python3 $BASEDIR/build-nonaur-action/encode_name.py
+python3 /encode_name.py
