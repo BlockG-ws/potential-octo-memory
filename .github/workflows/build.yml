@@ -47,7 +47,7 @@ jobs:
         path:  './*/${{ matrix.repos }}-*${{ steps.aur-version.outputs.latest_version }}*.pkg.tar.zst'
 
 
-    - uses: ./build-aur-action
+    - uses: ./actions/build-aur
       if: steps.cache.outputs.cache-hit != 'true'
       with:
         repo-name: ${{ matrix.repos }}
@@ -124,7 +124,7 @@ jobs:
           - name: Build Non-AUR packages
             if: steps.cache.outputs.cache-hit != 'true'
             id: makepkg
-            uses: ./build-nonaur-action
+            uses: ./actions/build-nonaur
             with:
               pkgdir: ${{ matrix.PKGBUILDs }}
               aurDeps: true
@@ -148,8 +148,7 @@ jobs:
               artifacts: ${{ steps.makepkg.outputs.pkgfile0 }}
               token: ${{ secrets.GITHUB_TOKEN }}
 
-  #TODO
-  upload:
+  uploadDatabase:
     runs-on: ubuntu-latest
     if: always()
     needs: [buildAUR , buildNonAUR]
@@ -170,7 +169,7 @@ jobs:
               tar -xzf "$file" -C "$(dirname "$file")"
             done
 
-      - uses: ./create-db
+      - uses: ./actions/create-db
         with:
           repo_name: gb-cha0s
           gpg-privatekey: ${{ secrets.gpg_private_key }}
