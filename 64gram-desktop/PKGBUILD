@@ -34,7 +34,7 @@ source=("https://github.com/TDesktop-x64/tdesktop/releases/download/v${pkgver}/$
 
 sha256sums=('fe47a67c83d3c624ef6b8a6c66150a73e075b11d1f031d52066470a548307600'
             'SKIP'
-            'cf040f411cd1e2930247aed6e050491c5ba14e695cf63c6e2da1b444926c5427'
+            'e621148c1db61fa3910350d30f603ffd6ccdb8fd4f2c9a697650a538eddf93c1'
             'ee6af4d1feb643a1d9bab9d0d967812d075a9e80bff7dbd5d5a4568e8fe9b513'
             '693a07b4e59d9c2ab271f493d1a9bac8890d6c8174fe60fb5db7396a06ff1f96')
 
