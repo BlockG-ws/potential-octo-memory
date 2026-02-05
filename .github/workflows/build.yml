@@ -170,11 +170,12 @@ jobs:
               tar -xzf "$file" -C "$(dirname "$file")"
             done
 
-      - uses: ./create-db-action
+      - uses: ./create-db
         with:
           repo_name: gb-cha0s
           gpg-privatekey: ${{ secrets.gpg_private_key }}
-          local_path: ./**/*.pkg.tar.zst
+          package_path: './'
+          output_path: './upload_packages'
 
       - uses: ncipollo/release-action@v1
         with:
