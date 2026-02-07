@@ -71,7 +71,7 @@ prepare() {
             if [[ -e "$dir/$target" ]]; then
                 # 双重确认：避免把目录误判为同名文件（防止递归引用）
                 if [[ "$(realpath "$dir/$target")" != "$(realpath "$file")" ]]; then
-                    echo "修复: $file -> $target"
+                    echo "fixed symlink: $file -> $target"
                     rm "$file"
                     ln -s "$target" "$file"
                 fi
