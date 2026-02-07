@@ -42,6 +42,28 @@ prepare() {
     #LANG=C.UTF-8 bsdtar -xf ${_pkgname}-${pkgver}-full.tar.gz
     cd $_pkgname-$pkgver-full
     #find "${srcdir}"/ -type f -exec dos2unix {} \;
+    echo "trying to finding out broken symlinks"
+
+    # 1. 查找所有小于 512 字节的文件（符号链接通常非常小）
+    # 2. 读取文件内容作为“目标路径”
+    # 3. 检查该“目标路径”是否存在
+    # 4. 如果存在，则删除文本文件并建立真正的符号链接
+
+    find . -type f -size -512c | while read -r file; do
+        # 读取文件内容，去除可能存在的尾部换行符
+        target=$(cat "$file")
+
+        # 获取文件所在的目录
+        dir=$(dirname "$file")
+
+        # 检查目标文件是否存在（相对于链接文件所在的目录）
+        if [[ -e "$dir/$target" || -L "$dir/$target" ]]; then
+            echo "fixing symlink: $file -> $target"
+            rm "$file"
+            ln -s "$target" "$file"
+        fi
+    done
+
     patch -Np1 --binary -i ${srcdir}/block-sponsored_messages.patch
     patch -Np1 --binary -i ${srcdir}/fix-lzma-link.patch
 }
