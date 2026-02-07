@@ -50,18 +50,32 @@ prepare() {
     # 4. 如果存在，则删除文本文件并建立真正的符号链接
 
     find . -type f -size -512c | while read -r file; do
-        # 读取文件内容，去除可能存在的尾部换行符
-        target=$(cat "$file")
+            # 1. 跳过 .git 开头的文件（通常构建不需要，且容易干扰）
+            if [[ "$(basename "$file")" == .git* ]]; then
+                continue
+            fi
 
-        # 获取文件所在的目录
-        dir=$(dirname "$file")
+            # 读取潜在的目标路径
+            target=$(cat "$file")
 
-        # 检查目标文件是否存在（相对于链接文件所在的目录）
-        if [[ -e "$dir/$target" || -L "$dir/$target" ]]; then
-            echo "fixing symlink: $file -> $target"
-            rm "$file"
-            ln -s "$target" "$file"
-        fi
+            # 2. 【关键修复】如果内容为空，或者全是空白字符，直接跳过
+            if [[ -z "${target// /}" ]]; then
+                continue
+            fi
+
+            dir=$(dirname "$file")
+
+            # 3. 检查目标是否存在
+            # 注意：这里我们只处理原本设计为指向“文件”或“目录”的链接
+            # 通过判定 "$dir/$target" 是否存在来避免死链
+            if [[ -e "$dir/$target" ]]; then
+                # 双重确认：避免把目录误判为同名文件（防止递归引用）
+                if [[ "$(realpath "$dir/$target")" != "$(realpath "$file")" ]]; then
+                    echo "修复: $file -> $target"
+                    rm "$file"
+                    ln -s "$target" "$file"
+                fi
+            fi
     done
 
     patch -Np1 --binary -i ${srcdir}/block-sponsored_messages.patch
