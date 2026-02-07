@@ -109,11 +109,6 @@ jobs:
               docker-images: false
               swap-storage: false
 
-          - name: Convert LF to CRLF using sed
-            run: |
-              sed -i 's/$/\r/' ./64gram-desktop/fix-lzma-link.patch
-              sed -i 's/$/\r/' ./64gram-desktop/block-sponsored_messages.patch
-
           - name: Build Non-AUR packages
             if: steps.cache.outputs.cache-hit != 'true'
             id: makepkg
