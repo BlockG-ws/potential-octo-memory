@@ -28,6 +28,7 @@ source=("https://github.com/TDesktop-x64/tdesktop/releases/download/v${pkgver}/$
         "git+https://github.com/tdlib/td.git#tag=${_td_commit_sha}"
         "block-sponsored_messages.patch"
         "fix-lzma-link.patch"
+        "qt-6.9-fixes.patch"
         "io.github.tdesktop_x64.TDesktop.desktop")
 
 #noextract=("${_pkgname}-${pkgver}-full.tar.gz")
@@ -36,6 +37,7 @@ sha256sums=('fe47a67c83d3c624ef6b8a6c66150a73e075b11d1f031d52066470a548307600'
             'SKIP'
             'c23c99b1b11d1582df34897bd9b4b0e814f4e72148e8ea3733c0808a6c9f0c78'
             '7d337b57a1e3502bac64dd87eb5140cda8238938c30533e12f828f52151bbbcf'
+            '4141927ead632b66cef5ebdb68dd122dc8b20854a4538b095f9f4df4f86d95a4'
             '693a07b4e59d9c2ab271f493d1a9bac8890d6c8174fe60fb5db7396a06ff1f96')
 
 prepare() {
@@ -48,6 +50,8 @@ prepare() {
 
 build() {
     CXXFLAGS+=' -ffat-lto-objects'
+
+    patch -p1 --binary -d Telegram/lib_base < ../qt-6.9-fixes.patch
 
     cmake -S td -B td/build \
         -DCMAKE_BUILD_TYPE=None \

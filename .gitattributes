@@ -1,3 +1,4 @@
 # 64gram-desktop patch files should use CRLF line endings
 64gram-desktop/block-sponsored_messages.patch eol=crlf
 64gram-desktop/fix-lzma-link.patch eol=crlf
+64gram-desktop/qt-6.9-fixes.patch eol=crlf
