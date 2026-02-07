@@ -42,8 +42,6 @@ prepare() {
     #LANG=C.UTF-8 bsdtar -xf ${_pkgname}-${pkgver}-full.tar.gz
     cd $_pkgname-$pkgver-full
     #find "${srcdir}"/ -type f -exec dos2unix {} \;
-    unix2dos ${srcdir}/block-sponsored_messages.patch
-    unix2dos ${srcdir}/fix-lzma-link.patch
     patch -Np1 -i ${srcdir}/block-sponsored_messages.patch
     patch -Np1 -i ${srcdir}/fix-lzma-link.patch
 }
