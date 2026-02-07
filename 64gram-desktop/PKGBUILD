@@ -41,9 +41,10 @@ sha256sums=('fe47a67c83d3c624ef6b8a6c66150a73e075b11d1f031d52066470a548307600'
 prepare() {
     #LANG=C.UTF-8 bsdtar -xf ${_pkgname}-${pkgver}-full.tar.gz
     cd $_pkgname-$pkgver-full
+    # TODO: make better handling for line-ending convert
     #find "${srcdir}"/ -type f -exec dos2unix {} \;
-    patch -Np1 -l -i ${srcdir}/block-sponsored_messages.patch
-    patch -Np1 -l -i ${srcdir}/fix-lzma-link.patch
+    patch -Np1 -l --binary -i ${srcdir}/block-sponsored_messages.patch
+    patch -Np1 -l --binary -i ${srcdir}/fix-lzma-link.patch
 }
 
 build() {
