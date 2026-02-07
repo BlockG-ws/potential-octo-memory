@@ -51,8 +51,7 @@ prepare() {
 build() {
     CXXFLAGS+=' -ffat-lto-objects'
 
-    ls -R .
-    patch -Np1 --binary -d Telegram/lib_base -i ${srcdir}/qt-6.9-fixes.patch
+    patch -Np1 --binary -d ${_pkgname}-${pkgver}-full/Telegram/lib_base -i ${srcdir}/qt-6.9-fixes.patch
 
     cmake -S td -B td/build \
         -DCMAKE_BUILD_TYPE=None \
