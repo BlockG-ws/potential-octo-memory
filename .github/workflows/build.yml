@@ -73,7 +73,7 @@ jobs:
   buildNonAUR:
     strategy:
       matrix:
-        PKGBUILDs: [64gram-desktop]
+        PKGBUILDs: ['']
 
       fail-fast: false
     
