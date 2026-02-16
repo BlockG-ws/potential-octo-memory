@@ -5,6 +5,11 @@ on:
   schedule:
     - cron:  '35 0,12 * * *'
   workflow_dispatch:
+    inputs:
+      rebuild-packages:
+        description: 'Packages to rebuild ignoring cache (comma-separated, leave empty for normal build)'
+        required: false
+        default: ''
 
 jobs:
   buildAUR:
@@ -16,7 +21,7 @@ jobs:
             preinstall-pkgs: "at-spi2-core"
 
       fail-fast: false
-      
+    
     runs-on: ubuntu-latest
     
     steps:
@@ -32,6 +37,9 @@ jobs:
     # use cache to speed up build
     - name: restore from cache
       id: cache
+      if: |
+        github.event_name != 'workflow_dispatch' ||
+        !contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.repos))
       uses: actions/cache@v4
       with:
         key: aur-build-cache-${{ matrix.repos }}-${{ steps.aur-version.outputs.latest_version }}
@@ -39,7 +47,7 @@ jobs:
 
 
     - uses: ./actions/build-aur
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
       with:
         repo-name: ${{ matrix.repos }}
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
@@ -55,7 +63,7 @@ jobs:
         if-no-files-found: error
         
     - uses: ncipollo/release-action@v1
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
       with:
         allowUpdates: true
         tag: "packages"
@@ -63,82 +71,85 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
 
   buildNonAUR:
-      strategy:
-        matrix:
-          PKGBUILDs: [64gram-desktop]
+    strategy:
+      matrix:
+        PKGBUILDs: [64gram-desktop]
 
-        fail-fast: false
+      fail-fast: false
+    
+    runs-on: ubuntu-latest
 
-      runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-      steps:
-          - uses: actions/checkout@v3
+      - name: Extract version from PKGBUILD
+        id: version
+        run: |
+          source "./${{ matrix.PKGBUILDs }}/PKGBUILD"
 
-          - name: Extract version from PKGBUILD
-            id: version
-            run: |
-              source "./${{ matrix.PKGBUILDs }}/PKGBUILD"
+          # 尝试修复GitHub Actions无法正确处理冒号带来的问题
+          pkgver=$(echo "$pkgver" | sed 's/:/*/g')
 
-              # 尝试修复GitHub Actions无法正确处理冒号带来的问题
-              pkgver=$(echo "$pkgver" | sed 's/:/*/g')
+          echo "pkgver=${pkgver}" >> $GITHUB_OUTPUT
+          echo "pkgname=${pkgname}" >> $GITHUB_OUTPUT
 
-              echo "pkgver=${pkgver}" >> $GITHUB_OUTPUT
-              echo "pkgname=${pkgname}" >> $GITHUB_OUTPUT
+      - name: restore from cache
+        id: cache
+        if: |
+          github.event_name != 'workflow_dispatch' ||
+          !contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.PKGBUILDs))
+        uses: actions/cache@v4
+        with:
+          key: aur-build-cache-${{ matrix.PKGBUILDs }}-${{ steps.version.outputs.pkgver }}
+          path:  './*/${{ matrix.PKGBUILDs }}-*.pkg.tar.zst'
 
-          - name: restore from cache
-            id: cache
-            uses: actions/cache@v4
-            with:
-              key: aur-build-cache-${{ matrix.PKGBUILDs }}-${{ steps.version.outputs.pkgver }}
-              path:  './*/${{ matrix.PKGBUILDs }}-*.pkg.tar.zst'
+      - name: Free Disk Space (Ubuntu)
+        if: steps.cache.outputs.cache-hit != 'true' && matrix.PKGBUILDs == '64gram-desktop'
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: true
 
-          - name: Free Disk Space (Ubuntu)
-            if: steps.cache.outputs.cache-hit != 'true' && matrix.PKGBUILDs == '64gram-desktop'
-            uses: jlumbroso/free-disk-space@main
-            with:
-              # this might remove tools that are actually needed,
-              # if set to "true" but frees about 6 GB
-              tool-cache: true
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: false
 
-              # all of these default to true, but feel free to set to
-              # "false" if necessary for your workflow
-              android: true
-              dotnet: true
-              haskell: true
-              large-packages: true
-              docker-images: false
-              swap-storage: false
+      #- name: Convert LF to CRLF using unix2dos
+      #  run: |
+      #    sudo apt-get update && sudo apt-get install -y dos2unix
+      #    unix2dos ./64gram-desktop/fix-lzma-link.patch
+      #    unix2dos ./64gram-desktop/block-sponsored_messages.patch
 
-          #- name: Convert LF to CRLF using unix2dos
-          #  run: |
-          #    sudo apt-get update && sudo apt-get install -y dos2unix
-          #    unix2dos ./64gram-desktop/fix-lzma-link.patch
-          #   unix2dos ./64gram-desktop/block-sponsored_messages.patch
+      - name: Build Non-AUR packages
+        if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        id: makepkg
+        uses: ./actions/build-nonaur
+        with:
+          pkgdir: ${{ matrix.PKGBUILDs }}
+          aurDeps: true
 
-          - name: Build Non-AUR packages
-            if: steps.cache.outputs.cache-hit != 'true'
-            id: makepkg
-            uses: ./actions/build-nonaur
-            with:
-              pkgdir: ${{ matrix.PKGBUILDs }}
-              aurDeps: true
+      - name: package tarball
+        run: tar -czf '${{ matrix.PKGBUILDs }}.tar.gz' ./*/*.pkg.tar.zst
 
-          - name: package tarball
-            run: tar -czf '${{ matrix.PKGBUILDs }}.tar.gz' ./*/*.pkg.tar.zst
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ./*/*.pkg.tar.zst
+          name: ${{ matrix.PKGBUILDs }}
+          if-no-files-found: error
 
-          - uses: actions/upload-artifact@v4
-            with:
-              path: ./*/*.pkg.tar.zst
-              name: ${{ matrix.PKGBUILDs }}
-              if-no-files-found: error
-
-          - uses: ncipollo/release-action@v1
-            if: steps.cache.outputs.cache-hit != 'true'
-            with:
-              allowUpdates: true
-              tag: "packages"
-              artifacts: ${{ steps.makepkg.outputs.pkgfile0 }}
-              token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ncipollo/release-action@v1
+        if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          allowUpdates: true
+          tag: "packages"
+          artifacts: ${{ steps.makepkg.outputs.pkgfile0 }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   uploadDatabase:
     runs-on: ubuntu-latest
