@@ -47,7 +47,10 @@ jobs:
 
 
     - uses: ./actions/build-aur
-      if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+      if: |
+        steps.cache.outputs.cache-hit != 'true' ||
+        (github.event_name == 'workflow_dispatch' && 
+         contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.repos)))
       with:
         repo-name: ${{ matrix.repos }}
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
@@ -127,7 +130,10 @@ jobs:
       #    unix2dos ./64gram-desktop/block-sponsored_messages.patch
 
       - name: Build Non-AUR packages
-        if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        if: |
+          steps.cache.outputs.cache-hit != 'true' ||
+          (github.event_name == 'workflow_dispatch' && 
+           contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.PKGBUILDs)))
         id: makepkg
         uses: ./actions/build-nonaur
         with:
