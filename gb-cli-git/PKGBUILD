@@ -1,0 +1,30 @@
+# Maintainer: GrassBlock <i@gb0.dev>
+pkgname=gb-cli-git
+_name=${pkgname%-*}
+pkgver=alpha.20260328.28.2dfca28
+pkgrel=1
+pkgdesc="a cli tool for everyday tasks - base32/64/85 encoding/decoding, getting quotes, etc"
+arch=("x86_64")
+url="https://git.gay/gb/gb"
+license=('MIT')
+#depends=("rbw")
+makedepends=("go")
+provides=("gb")
+source=('git+https://git.gay/gb/gb.git')
+#install=${_name}.install
+sha256sums=('SKIP')
+
+pkgver() {
+    cd "$_name"
+    printf "alpha.%s.%s.%s" "$(git log -1 --format="%cd" --date=short | sed s/-//g)" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "${_name}"
+	go build -ldflags="-w -s"
+}
+
+package() {
+	cd "${_name}"
+	install -Dm 755 gb -t ${pkgdir}/usr/bin
+}
