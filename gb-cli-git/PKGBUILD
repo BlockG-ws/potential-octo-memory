@@ -15,16 +15,16 @@ source=('git+https://git.gay/gb/gb.git')
 sha256sums=('SKIP')
 
 pkgver() {
-    cd "$_name"
+    cd gb
     printf "alpha.%s.%s.%s" "$(git log -1 --format="%cd" --date=short | sed s/-//g)" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 build() {
-	cd "${_name}"
+	cd gb
 	go build -ldflags="-w -s"
 }
 
 package() {
-	cd "${_name}"
+	cd gb
 	install -Dm 755 gb -t ${pkgdir}/usr/bin
 }
