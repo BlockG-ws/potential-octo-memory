@@ -15,7 +15,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, code-translucent, vicinae-git, waywallen, waywallen-display, plasma-wallpaper-waywallen, open-wallpaper-engine, libadwaita-without-adwaita, manboster]
+        repos: [ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, code-translucent, vicinae-git, waywallen, waywallen-display, plasma-wallpaper-waywallen, open-wallpaper-engine, plasma6-wallpapers-wallpaper-engine-git,libadwaita-without-adwaita, manboster]
 
       fail-fast: false
     
