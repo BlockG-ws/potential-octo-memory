@@ -16,9 +16,6 @@ jobs:
     strategy:
       matrix:
         repos: [ttf-sarasa-gothic-nerd-fonts, glfw-wayland-minecraft-cursorfix, kwin-effect-rounded-corners-git, code-translucent, vicinae-git, waywallen, waywallen-display, plasma-wallpaper-waywallen, open-wallpaper-engine, libadwaita-without-adwaita, manboster]
-        include:
-          - repos: open-wallpaper-engine
-            preinstall-pkgs: "waywallen"
 
       fail-fast: false
     
