@@ -10,13 +10,17 @@ inputs:
   output_path:
     description: 'Path to save the generated database.'
     default: './repo'
-    
+  existing_db:
+    description: 'Path to an existing database to merge new packages into.'
+    default: ''
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  
+
   env:
     repo_name: ${{ inputs.repo_name }}
     gpg_key: ${{ inputs.gpg-privatekey }}
     package_path: ${{ inputs.package_path }}
     output_path: ${{ inputs.output_path }}
+    existing_db: ${{ inputs.existing_db }}

@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+shopt -s nullglob
 
 init_path=$PWD
 
@@ -17,6 +18,14 @@ if [ -d "$output_path" ]; then
     rm -rf "$output_path"
 fi
 mkdir -p "$output_path"
+echo "::endgroup::"
+
+echo "::group::Reusing existing database"
+if [ ! -z "$existing_db" ] && [ -f "$existing_db" ]; then
+    cp "$existing_db" "$output_path/$repo_name.db.tar.gz"
+else
+    echo "No existing database found, starting from scratch"
+fi
 echo "::endgroup::"
 
 echo "::group::Copying packages to output directory"

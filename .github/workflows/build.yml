@@ -1,5 +1,13 @@
 name: BUILD
 
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: build-packages
+  cancel-in-progress: false
+
 on:
   push:
   schedule:
@@ -53,7 +61,7 @@ jobs:
         preinstallPkgs: ${{ matrix.preinstall-pkgs }}
 
     - name: package tarball
-      run: tar -czf '${{ matrix.repos }}.tar.gz' ./*/*.pkg.tar.zst
+      run: tar -czf '${{ matrix.repos }}.tar.gz' ./*/${{ matrix.repos }}-*.pkg.tar.zst
 
 
     - uses: actions/upload-artifact@v4
@@ -61,13 +69,39 @@ jobs:
         path: ./${{ matrix.repos }}.tar.gz
         name: ${{ matrix.repos }}
         if-no-files-found: error
-        
+
+    - name: Delete cached package before rebuild
+      if: |
+        github.event_name == 'workflow_dispatch' &&
+        contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.repos))
+      env:
+        CACHE_KEY: aur-build-cache-${{ matrix.repos }}-${{ steps.aur-version.outputs.latest_version }}
+      run: |
+        curl -sSf -G -X DELETE \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          --data-urlencode "key=$CACHE_KEY" \
+          --data-urlencode "ref=refs/heads/${{ github.ref_name }}" \
+          "$GITHUB_API_URL/repos/${{ github.repository }}/actions/caches" \
+          || echo "No cache entry to delete"
+
+    - uses: actions/cache/save@v4
+      if: |
+        github.event_name == 'workflow_dispatch' &&
+        contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.repos)) &&
+        success()
+      with:
+        key: aur-build-cache-${{ matrix.repos }}-${{ steps.aur-version.outputs.latest_version }}
+        path:  './*/${{ matrix.repos }}-*.pkg.tar.zst'
+
     - uses: ncipollo/release-action@v1
-      if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+      if: |
+        steps.cache.outputs.cache-hit != 'true' ||
+        (github.event_name == 'workflow_dispatch' &&
+         contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.repos)))
       with:
         allowUpdates: true
         tag: "packages"
-        artifacts: "./*/*.zst"
+        artifacts: "./*/${{ matrix.repos }}-*.zst"
         token: ${{ secrets.GITHUB_TOKEN }}
 
   buildNonAUR:
@@ -138,20 +172,46 @@ jobs:
           aurDeps: true
 
       - name: package tarball
-        run: tar -czf '${{ matrix.PKGBUILDs }}.tar.gz' ./*/*.pkg.tar.zst
+        run: tar -czf '${{ matrix.PKGBUILDs }}.tar.gz' ./*/${{ matrix.PKGBUILDs }}-*.pkg.tar.zst
 
       - uses: actions/upload-artifact@v4
         with:
-          path: ./*/*.pkg.tar.zst
+          path: ./*/${{ matrix.PKGBUILDs }}-*.pkg.tar.zst
           name: ${{ matrix.PKGBUILDs }}
           if-no-files-found: error
 
+      - name: Delete cached package before rebuild
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.PKGBUILDs))
+        env:
+          CACHE_KEY: aur-build-cache-${{ matrix.PKGBUILDs }}-${{ steps.version.outputs.pkgver }}
+        run: |
+          curl -sSf -G -X DELETE \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            --data-urlencode "key=$CACHE_KEY" \
+            --data-urlencode "ref=refs/heads/${{ github.ref_name }}" \
+            "$GITHUB_API_URL/repos/${{ github.repository }}/actions/caches" \
+            || echo "No cache entry to delete"
+
+      - uses: actions/cache/save@v4
+        if: |
+          github.event_name == 'workflow_dispatch' &&
+          contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.PKGBUILDs)) &&
+          success()
+        with:
+          key: aur-build-cache-${{ matrix.PKGBUILDs }}-${{ steps.version.outputs.pkgver }}
+          path:  './*/${{ matrix.PKGBUILDs }}-*.pkg.tar.zst'
+
       - uses: ncipollo/release-action@v1
-        if: steps.cache.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        if: |
+          steps.cache.outputs.cache-hit != 'true' ||
+          (github.event_name == 'workflow_dispatch' &&
+           contains(format(',{0},', github.event.inputs.rebuild-packages), format(',{0},', matrix.PKGBUILDs)))
         with:
           allowUpdates: true
           tag: "packages"
-          artifacts: ${{ steps.makepkg.outputs.pkgfile0 }}
+          artifacts: "./*/${{ matrix.PKGBUILDs }}-*.pkg.tar.zst"
           token: ${{ secrets.GITHUB_TOKEN }}
 
   uploadDatabase:
@@ -175,11 +235,34 @@ jobs:
               tar -xzf "$file" -C "$(dirname "$file")"
             done
 
+      - name: Deduplicate package files
+        run: |
+            mkdir -p ./unique_packages
+            find . -name "*.pkg.tar.zst" -type f -print0 | sort -z | while IFS= read -r -d '' file; do
+              name="$(basename "$file")"
+              if [ -f "./unique_packages/$name" ]; then
+                echo "::warning::Duplicate package file skipped: $file"
+              else
+                cp "$file" "./unique_packages/$name"
+              fi
+            done
+            ls -l ./unique_packages
+
+      - name: Download previous database
+        run: |
+            mkdir -p ./previous_db
+            if ! curl -fsSL -o ./previous_db/gb-cha0s.db.tar.gz \
+                "https://github.com/${{ github.repository }}/releases/download/packages/gb-cha0s.db.tar.gz"; then
+              echo "No previous database found, starting from scratch"
+              rm -f ./previous_db/gb-cha0s.db.tar.gz
+            fi
+
       - uses: ./actions/create-db
         with:
           repo_name: gb-cha0s
           gpg-privatekey: ${{ secrets.gpg_private_key }}
-          package_path: './'
+          package_path: './unique_packages'
+          existing_db: './previous_db/gb-cha0s.db.tar.gz'
           output_path: './upload_packages'
 
       - uses: ncipollo/release-action@v1
